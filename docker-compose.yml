@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - phishme_db_volume:/var/lib/mysql
+    environment:
+      - TZ=Asia/Seoul
+      - MYSQL_DATABASE=r6pc
+      - MYSQL_ROOT_PASSWORD=!!!DB_PASSWORD_HERE!!!
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - "43306:3306"
+
+  app:
+    depends_on:
+      - db
+    image: phishme-backend:latest
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://127.0.0.1:3306/PHISHME
+      SPRING_DATASOURCE_USERNAME: !!!DB_USERNAME_HERE!!!
+      SPRING_DATASOURCE_PASSWORD: !!!DB_PASSWORD_HERE!!!
+      JWT_ACCESS_SECRET: !!!JWT_ACCESS_SECRET_HERE!!!
+      JWT_REFRESH_SECRET: !!!JWT_REFRESH_SECRET_HERE!!!
+      JWT_ACCESS_EXPIRATION: !!!JWT_ACCESS_EXPIRATION_HERE!!!
+      JWT_REFRESH_EXPIRATION: !!!JWT_REFRESH_EXPIRATION_HERE!!!
+      KAKAO_CLIENT_ID: !!!KAKAO_CLIENT_ID_HERE!!!
+      APPLE_CLIENT_ID: !!!APPLE_CLIENT_ID_HERE!!!
+      GOOGLE_IOS_CLIENT_ID: !!!GOOGLE_IOS_CLIENT_ID_HERE!!!
+      GOOGLE_ANDROID_CLIENT_ID: !!!GOOGLE_ANDROID_CLIENT_ID_HERE!!!
+      PROFANITY_API_KEY: !!!PROFANITY_API_KEY_HERE!!!
+
+volumes:
+  phishme_db_volume:
