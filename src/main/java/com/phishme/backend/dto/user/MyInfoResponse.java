@@ -21,7 +21,5 @@ public class MyInfoResponse {
     private String nickname;
     private String gender;
     private String birthDate;
-    private String admissionYear;
-    private String department;
     private boolean isAdmin;
 }

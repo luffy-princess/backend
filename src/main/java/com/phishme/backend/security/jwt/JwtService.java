@@ -128,6 +128,7 @@ public class JwtService {
     }
 
     public void logout(Users requestUser, HttpServletResponse response) {
+        System.out.println(requestUser.getId());
         jwtTokenRepository.deleteByUserId(requestUser.getId());
 
         response.setHeader("Authorization", "");

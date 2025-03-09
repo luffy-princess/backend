@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,7 @@ import com.phishme.backend.enums.Messages;
 import com.phishme.backend.enums.UserRoles;
 import com.phishme.backend.exceptions.BusinessException;
 import com.phishme.backend.security.jwt.JwtService;
+import com.phishme.backend.security.jwt.UserPrincipal;
 import com.phishme.backend.service.TermService;
 import com.phishme.backend.service.UserService;
 
@@ -47,6 +50,16 @@ public class AuthController {
 
     @Autowired
     private TermService termService;
+
+    @PostMapping("/logout")
+    public void logoutController(HttpServletResponse response, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Users user = userPrincipal.getUser();
+        if (user == null) {
+            throw new BusinessException(ErrorCode.USER_DOESNT_EXIST);
+        }
+
+        jwtService.logout(user, response);
+    }
 
     @PostMapping("/login")
     public LoginResponse loginController(HttpServletResponse response, @RequestBody LoginRequest loginDto) {

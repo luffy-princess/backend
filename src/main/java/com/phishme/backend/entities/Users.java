@@ -76,5 +76,5 @@ public class Users {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<TrainProgress> trainProgresses;
+    private List<TrainingProgress> trainProgresses;
 }

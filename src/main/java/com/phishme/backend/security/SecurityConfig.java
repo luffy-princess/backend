@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import com.phishme.backend.enums.UserRoles;
 import com.phishme.backend.exceptions.ExceptionHandlerFilter;
@@ -32,7 +33,8 @@ public class SecurityConfig {
                         "/login",
                         "/register",
                         "/terms",
-                        "/terms/registration"
+                        "/terms/registration",
+                        "/images/**"
         };
         public static final String[] PERMITTED_ROLES = Arrays.stream(UserRoles.values())
                         .map(role -> role.name().replace("ROLE_", ""))
@@ -61,7 +63,13 @@ public class SecurityConfig {
                                                 PERMITTED_URI, jwtService,
                                                 userService),
                                                 UsernamePasswordAuthenticationFilter.class)
-                                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class);
+                                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class)
+                                .exceptionHandling(handler -> handler
+                                                .authenticationEntryPoint((request, response, authException) -> {
+                                                        response.setStatus(401);
+                                                        response.setContentType("application/json");
+                                                        response.getWriter().write("{\"message\":\"Unauthorized\"}");
+                                                }));
 
                 return http.build();
         }
